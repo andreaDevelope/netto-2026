@@ -20,3 +20,25 @@ export function calcolaContributiInps(ral, config) {
   const fasciaEccedente = (imponibileContributivo - primaFasciaRetribuzionePensionabile) * aliquotaAggiuntiva;
   return fasciaBase + fasciaEccedente;
 }
+
+/**
+ * Calcola l'IRPEF lorda, progressiva per scaglioni.
+ * Fonte: art. 11 TUIR, come modificato da L. 199/2025 art. 1 co. 3-4.
+ * @param {number} imponibileFiscale
+ * @param {{scaglioni: Array<{limiteSuperiore: number, aliquota: number}>}} config
+ * @returns {number}
+ */
+export function calcolaIrpefLorda(imponibileFiscale, config) {
+  let imposta = 0;
+  let limiteInferiore = 0;
+
+  for (const scaglione of config.scaglioni) {
+    if (imponibileFiscale <= limiteInferiore) break;
+
+    const quotaInScaglione = Math.min(imponibileFiscale, scaglione.limiteSuperiore) - limiteInferiore;
+    imposta += quotaInScaglione * scaglione.aliquota;
+    limiteInferiore = scaglione.limiteSuperiore;
+  }
+
+  return imposta;
+}

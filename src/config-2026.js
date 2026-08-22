@@ -51,8 +51,8 @@ export const CONFIG_2026 = {
   detrazioneLavoroDipendente: {
     sogliaBassa: 15000,
     importoFisso: 1955, // per reddito complessivo <= 15.000 €
-    minimoTempoIndeterminato: 1380, // pavimento minimo, tempo indeterminato
-    minimoTempoDeterminato: 690, // pavimento minimo, tempo determinato (non usato nel caso standard)
+    minimoTempoIndeterminato: 690, // pavimento minimo, tempo indeterminato
+    minimoTempoDeterminato: 1380, // pavimento minimo, tempo determinato (non usato nel caso standard)
 
     // 15.001 – 28.000 €: 1.910 + 1.190 × (28.000 − RC) / 13.000
     fasciaMedia: { sogliaMin: 15000, sogliaMax: 28000, base: 1910, moltiplicatore: 1190, divisore: 13000, riferimento: 28000 },
@@ -77,8 +77,8 @@ export const CONFIG_2026 = {
     //   7,1% (fino a 8.500€, max 603,50€) · 5,3% (8.500-15.000€, max 795€) · 4,8% (15.000-20.000€, max 960€)
     // I massimi tornano SOLO se la percentuale è applicata piatta sull'intero reddito da lavoro
     // (es. 15.000 × 5,3% = 795), non a scaglioni progressivi come l'IRPEF.
-    // Alcune fonti secondarie la calcolano invece progressivamente (risultato più alto).
-    // SCELTA: si implementa il metodo INPS (piatto), fonte istituzionale.
+  
+    // si implementa il metodo INPS (piatto), fonte istituzionale.
     sommaEsente: {
       sogliaMassima: 20000,
       scaglioni: [
@@ -129,7 +129,7 @@ export const CONFIG_2026 = {
     sogliaEsenzione: 23000, // sotto o pari: zero. Sopra: 0,8% su tutto.
   },
 
-  // 8) PARAMETRI DI INPUT CON DEFAULT esposti come input perché la normativa è sensibile a questi valori.
+  // 8) PARAMETRI DI INPUT CON DEFAULT.
   default: {
     mensilita: 13, // cambia solo il divisore del netto mensile, non le imposte
     giorniLavorati: 365, // incide sul ragguaglio delle detrazioni

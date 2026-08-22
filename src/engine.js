@@ -129,3 +129,17 @@ export function calcolaCuneoFiscale(redditoComplessivo, config) {
   const importo = importoFisso * (sogliaMax - redditoComplessivo) / divisoreRiduzione;
   return { sommaEsente: 0, ulterioreDetrazione: importo };
 }
+
+/**
+ * Calcola l'importo candidato del trattamento integrativo (ex bonus Renzi), ragguagliato ai giorni.
+ * la condizione di capienza (spetta solo se l'imposta lorda supera la detrazione art. 13)
+ * Fonte: D.L. 3/2020, confermato per il 2026.
+ * @param {number} redditoComplessivo
+ * @param {number} giorniLavorati
+ * @param {{sogliaMassima: number, importoAnnuo: number}} config
+ * @returns {number}
+ */
+export function calcolaTrattamentoIntegrativo(redditoComplessivo, giorniLavorati, config) {
+  if (redditoComplessivo > config.sogliaMassima) return 0;
+  return config.importoAnnuo * (giorniLavorati / 365);
+}

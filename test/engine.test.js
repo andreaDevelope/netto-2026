@@ -1,7 +1,13 @@
 // @ts-check
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { calcolaContributiInps, calcolaCuneoFiscale, calcolaDetrazioneLavoroDipendente, calcolaIrpefLorda } from "../src/engine.js";
+import {
+  calcolaContributiInps,
+  calcolaCuneoFiscale,
+  calcolaDetrazioneLavoroDipendente,
+  calcolaIrpefLorda,
+  calcolaTrattamentoIntegrativo,
+} from "../src/engine.js";
 import { CONFIG_2026 } from "../src/config-2026.js";
 
 // Caso base, ben dentro il range RAL 25-35k del task.
@@ -118,6 +124,41 @@ test("calcolaDetrazioneLavoroDipendente — fascia bassa con pochi giorni, scatt
   assert.equal(risultato, 690);
 });
 
+// Bordo esatto primo scaglione somma esente (7,1%, tetto 603,50€).
+test("calcolaCuneoFiscale — bordo primo scaglione (8.500)", () => {
+  const risultato = calcolaCuneoFiscale(8500, CONFIG_2026.cuneoFiscale);
+  assert.equal(risultato.sommaEsente, 603.5);
+  assert.equal(risultato.ulterioreDetrazione, 0);
+});
+
+// Terzo scaglione somma esente, sotto il tetto — è anche il caso dell'ambiguità normativa (metodo piatto vs progressivo).
+test("calcolaCuneoFiscale — terzo scaglione somma esente (18.000)", () => {
+  const risultato = calcolaCuneoFiscale(18000, CONFIG_2026.cuneoFiscale);
+  assert.equal(risultato.sommaEsente, 864);
+  assert.equal(risultato.ulterioreDetrazione, 0);
+});
+
+// Detrazione fissa, range 20.001-32.000.
+test("calcolaCuneoFiscale — detrazione fissa (25.000)", () => {
+  const risultato = calcolaCuneoFiscale(25000, CONFIG_2026.cuneoFiscale);
+  assert.equal(risultato.sommaEsente, 0);
+  assert.equal(risultato.ulterioreDetrazione, 1000);
+});
+
+// Detrazione decrescente, range 32.001-40.000.
+test("calcolaCuneoFiscale — detrazione decrescente (36.000)", () => {
+  const risultato = calcolaCuneoFiscale(36000, CONFIG_2026.cuneoFiscale);
+  assert.equal(risultato.sommaEsente, 0);
+  assert.equal(risultato.ulterioreDetrazione, 500);
+});
+
+// Fuori da entrambi i binari.
+test("calcolaCuneoFiscale — sopra 40.000, nessun beneficio", () => {
+  const risultato = calcolaCuneoFiscale(41000, CONFIG_2026.cuneoFiscale);
+  assert.equal(risultato.sommaEsente, 0);
+  assert.equal(risultato.ulterioreDetrazione, 0);
+});
+
 // Bordo esatto dove i due binari si toccano: RC=20.000 è ancora somma esente (4,8%, tetto 960€).
 test("calcolaCuneoFiscale — bordo esatto 20.000 (ancora somma esente)", () => {
   const risultato = calcolaCuneoFiscale(20000, CONFIG_2026.cuneoFiscale);
@@ -130,4 +171,28 @@ test("calcolaCuneoFiscale — 20.001, passa al binario detrazione", () => {
   const risultato = calcolaCuneoFiscale(20001, CONFIG_2026.cuneoFiscale);
   assert.equal(risultato.sommaEsente, 0);
   assert.equal(risultato.ulterioreDetrazione, 1000);
+});
+
+// Fascia intera, anno completo.
+test("calcolaTrattamentoIntegrativo — RC in fascia, anno intero", () => {
+  const risultato = calcolaTrattamentoIntegrativo(12000, 365, CONFIG_2026.trattamentoIntegrativo);
+  assert.equal(risultato, 1200);
+});
+
+// Ragguaglio ai giorni parziali.
+test("calcolaTrattamentoIntegrativo — RC in fascia, 180 giorni", () => {
+  const risultato = calcolaTrattamentoIntegrativo(12000, 180, CONFIG_2026.trattamentoIntegrativo);
+  assert.ok(Math.abs(risultato - 591.78) < 0.01);
+});
+
+// Fuori soglia, zero indipendentemente dai giorni.
+test("calcolaTrattamentoIntegrativo — RC fuori soglia", () => {
+  const risultato = calcolaTrattamentoIntegrativo(16000, 365, CONFIG_2026.trattamentoIntegrativo);
+  assert.equal(risultato, 0);
+});
+
+// Bordo esatto: 15.000 è ancora dentro (<=), deve dare l'importo pieno.
+test("calcolaTrattamentoIntegrativo — bordo esatto 15.000", () => {
+  const risultato = calcolaTrattamentoIntegrativo(15000, 365, CONFIG_2026.trattamentoIntegrativo);
+  assert.equal(risultato, 1200);
 });

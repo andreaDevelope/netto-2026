@@ -1,9 +1,17 @@
 # Note di sviluppo — materiale per interview
 
-## Rigore nel processo (bug trovati e corretti)
-- INPS: aliquota aggiuntiva 0.0119 invece di 0.1019 (battitura, commento giusto ma valore sbagliato)
-- Detrazione lavoro dipendente: minimi 690/1.380 invertiti nel config
-- Detrazione lavoro dipendente: pavimento minimo applicato a tutte le fasce invece che solo a RC ≤ 15.000 (art. 13 co. 1 lett. a) — trovato con test sul bordo RC=50.000
+## Il punto più interessante
+Il troncamento a 4 decimali richiesto dall'art. 13 TUIR (non arrotondamento) si
+scontra con la virgola mobile: `0,4075` viene memorizzato internamente come
+`0,407499999...`, e un troncamento ingenuo lo taglia a `0,4074` — un errore
+silenzioso, nessun crash, solo un numero leggermente sbagliato. Risolto con un
+epsilon prima del troncamento. Il bug è emerso da un solo test su 40, quello
+con RAL 25.000: gli altri casi cadevano per caso su valori "puliti" in binario.
 
-## Scoperte nel dominio (non solo errori miei)
-- (in arrivo — ambiguità cuneo fiscale, somma esente)
+## Perché il progetto resta volutamente piccolo
+Zero dipendenze, zero build step, 7 funzioni pure in un file solo. La
+tentazione con l'AI a disposizione è aggiungere: più input, più output, più
+UI. Qui il valore non sta nella quantità di feature ma nella
+tracciabilità di ogni numero alla norma che lo giustifica. Aggiungere ambiti
+non richiesti (netto orario, giornaliero) avrebbe significato numeri senza un
+riferimento normativo altrettanto solido.

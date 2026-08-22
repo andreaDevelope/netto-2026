@@ -1,12 +1,30 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Calcolo stipendio netto 2026</title>
   </head>
   <body>
-    <h1>$$</h1>
-    <script src="./src/engine.js" type="module"></script>
+    <main>
+      <h1>Dalla RAL al netto — anno d'imposta 2026</h1>
+      <p>Dipendente a tempo indeterminato, residente a Milano, senza agevolazioni.</p>
+
+      <section>
+        <label for="ral">RAL (€)</label>
+        <input type="number" id="ral" min="0" step="100" placeholder="30000" />
+
+        <label for="mensilita">Mensilità</label>
+        <input type="number" id="mensilita" min="12" max="14" value="13" />
+
+        <label for="giorni">Giorni lavorati nell'anno</label>
+        <input type="number" id="giorni" min="1" max="365" value="365" />
+
+        <button id="calcola">Calcola</button>
+      </section>
+
+      <section id="risultato"></section>
+    </main>
+    <script type="module" src="./src/ui.js"></script>
   </body>
 </html>

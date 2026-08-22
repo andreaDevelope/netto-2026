@@ -199,6 +199,14 @@ test("calcolaTrattamentoIntegrativo — bordo esatto 15.000", () => {
   assert.equal(risultato, 1200);
 });
 
+// RC ben dentro la soglia 15.000, ma irpefLorda non supera la detrazione
+// art. 13 — la funzione isolata NON conosce questa condizione (è verificata
+// solo dentro calcolaNetto), quindi qui il candidato resta pieno.
+test("calcolaTrattamentoIntegrativo — candidato pieno anche se poi la capienza lo azzererà altrove", () => {
+  const risultato = calcolaTrattamentoIntegrativo(7264.8, 365, CONFIG_2026.trattamentoIntegrativo);
+  assert.equal(risultato, 1200);
+});
+
 // Due scaglioni regionali attraversati, comunale sotto soglia.
 test("calcolaAddizionali — imponibile 20.000, comunale esente", () => {
   const risultato = calcolaAddizionali(20000, CONFIG_2026);
@@ -263,4 +271,18 @@ test("calcolaNetto — RAL 14.000, trattamento integrativo capiente", () => {
   assert.ok(Math.abs(risultato.trattamentoIntegrativo - 1200) < 0.01);
   assert.ok(Math.abs(risultato.nettoAnnuo - 13461.7534) < 0.01);
   assert.ok(Math.abs(risultato.nettoMensile - 1035.5195) < 0.01);
+});
+
+// RAL molto bassa: irpefLorda (1.670,904) non supera la detrazione (1.955) —
+// caso "non capiente". Il trattamento integrativo deve azzerarsi qui,
+// anche se RC è ben dentro la soglia 15.000 che normalmente lo darebbe pieno.
+// Unico ramo del genere finora privo di copertura.
+test("calcolaNetto — RAL 8.000, trattamento integrativo NON capiente", () => {
+  const risultato = calcolaNetto(8000, 365, 13, CONFIG_2026);
+  assert.ok(Math.abs(risultato.irpefLorda - 1670.904) < 0.01);
+  assert.ok(Math.abs(risultato.detrazioneLavoroDipendente - 1955) < 0.01);
+  assert.equal(risultato.trattamentoIntegrativo, 0);
+  assert.ok(Math.abs(risultato.irpefNetta - 0) < 0.01);
+  assert.ok(Math.abs(risultato.cuneoFiscale.sommaEsente - 515.8008) < 0.01);
+  assert.ok(Math.abs(risultato.nettoAnnuo - 7691.24376) < 0.01);
 });

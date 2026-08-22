@@ -1,7 +1,7 @@
 // @ts-check
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { calcolaContributiInps, calcolaIrpefLorda } from "../src/engine.js";
+import { calcolaContributiInps, calcolaDetrazioneLavoroDipendente, calcolaIrpefLorda } from "../src/engine.js";
 import { CONFIG_2026 } from "../src/config-2026.js";
 
 // Caso base, ben dentro il range RAL 25-35k del task.
@@ -82,4 +82,38 @@ test("calcolaIrpefLorda — un euro sopra il secondo scaglione (50.001)", () => 
 test("calcolaIrpefLorda — imponibile a zero", () => {
   const risultato = calcolaIrpefLorda(0, CONFIG_2026.irpef);
   assert.equal(risultato, 0);
+});
+
+test("calcolaDetrazioneLavoroDipendente — fascia bassa (RC ≤ 15.000)", () => {
+  const risultato = calcolaDetrazioneLavoroDipendente(12000, 365, CONFIG_2026.detrazioneLavoroDipendente);
+  assert.equal(risultato, 1955);
+});
+
+test("calcolaDetrazioneLavoroDipendente — fascia media (15.000 < RC ≤ 28.000)", () => {
+  const risultato = calcolaDetrazioneLavoroDipendente(22000, 365, CONFIG_2026.detrazioneLavoroDipendente);
+  assert.equal(risultato, 2459.185);
+});
+
+test("calcolaDetrazioneLavoroDipendente — fascia alta + maggiorazione 65€", () => {
+  const risultato = calcolaDetrazioneLavoroDipendente(30000, 365, CONFIG_2026.detrazioneLavoroDipendente);
+  assert.equal(risultato, 1801.19);
+});
+
+// Bordo esatto RC=50.000: la formula dà 0, il pavimento minimo NON deve applicarsi qui.
+test("calcolaDetrazioneLavoroDipendente — RC a 50.000, nessun pavimento applicato", () => {
+  const risultato = calcolaDetrazioneLavoroDipendente(50000, 365, CONFIG_2026.detrazioneLavoroDipendente);
+  assert.equal(risultato, 0);
+});
+
+// Sopra 50.000: deve restare 0.
+test("calcolaDetrazioneLavoroDipendente — RC sopra 50.000", () => {
+  const risultato = calcolaDetrazioneLavoroDipendente(60000, 365, CONFIG_2026.detrazioneLavoroDipendente);
+  assert.equal(risultato, 0);
+});
+
+// Giorni parziali in fascia bassa: qui il pavimento DEVE scattare.
+test("calcolaDetrazioneLavoroDipendente — fascia bassa con pochi giorni, scatta il pavimento", () => {
+  const risultato = calcolaDetrazioneLavoroDipendente(10000, 30, CONFIG_2026.detrazioneLavoroDipendente);
+  // 1.955 × 30/365 = 160,68 → sotto 690, deve salire al minimo
+  assert.equal(risultato, 690);
 });

@@ -2,7 +2,17 @@
 import { calcolaNetto } from "./engine.js";
 import { CONFIG_2026 } from "./config-2026.js";
 
-const euro = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
+const euroBase = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
+
+/**
+ * Formatta un importo in euro, sostituendo il punto delle migliaia con un punto medio (·),
+ * coerente con lo stile tipografico tecnico del resto dell'interfaccia.
+ * @param {number} valore
+ * @returns {string}
+ */
+function euro(valore) {
+  return euroBase.format(valore).replace(/\./g, "·");
+}
 
 /**
  * Legge un input numerico, con fallback se vuoto o non valido.
@@ -27,7 +37,7 @@ function leggiInput(id, fallback) {
 function riga(etichetta, importo, riferimento) {
   return `<tr>
     <td>${etichetta}</td>
-    <td>${euro.format(importo)}</td>
+    <td>${euro(importo)}</td>
     <td><small>${riferimento}</small></td>
   </tr>`;
 }
@@ -48,8 +58,8 @@ function calcolaEMostra() {
   const r = calcolaNetto(ral, giorni, mensilita, CONFIG_2026);
 
   contenitore.innerHTML = `
-    <h2>Netto annuo: ${euro.format(r.nettoAnnuo)}</h2>
-    <h3>Netto mensile (${mensilita} mensilità): ${euro.format(r.nettoMensile)}</h3>
+    <h2>Netto annuo: ${euro(r.nettoAnnuo)}</h2>
+    <h3>Netto mensile (${mensilita} mensilità): ${euro(r.nettoMensile)}</h3>
 
     <table>
       <thead>

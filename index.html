@@ -3,28 +3,89 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calcolo stipendio netto 2026</title>
+    <title>Calcolatore Stipendio Netto — Italia 2026</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./calcolatore.css" />
   </head>
   <body>
-    <main>
-      <h1>Dalla RAL al netto — anno d'imposta 2026</h1>
-      <p>Dipendente a tempo indeterminato, residente a Milano, senza agevolazioni.</p>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
 
-      <section>
-        <label for="ral">RAL (€)</label>
-        <input type="number" id="ral" min="0" step="100" placeholder="30000" />
+    <div class="page-wrap">
+      <header class="site-header">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span>Calcolatore fiscale · Italia 2026</span>
+        </div>
+        <h1>
+          Quanto prendi<br />
+          <em>davvero</em>?
+        </h1>
+        <p class="header-desc">Inserisci la tua RAL e ottieni il netto annuo, mensile e la ripartizione completa: IRPEF, INPS e detrazioni.</p>
+      </header>
 
-        <label for="mensilita">Mensilità</label>
-        <input type="number" id="mensilita" min="12" max="14" value="13" />
+      <main class="calc-card" role="main">
+        <div class="inputs-grid">
+          <div class="field field--full">
+            <label for="ral">
+              <span class="label-num">01</span>
+              RAL — Reddito Annuo Lordo
+            </label>
+            <div class="input-row">
+              <span class="input-adorn" aria-hidden="true">€</span>
+              <input type="number" id="ral" placeholder="35000" min="0" max="999999" step="100" autocomplete="off" />
+            </div>
+            <span class="field-hint">Importo annuo lordo prima di tasse e contributi</span>
+          </div>
 
-        <label for="giorni">Giorni lavorati nell'anno</label>
-        <input type="number" id="giorni" min="1" max="365" value="365" />
+          <div class="field">
+            <label for="mensilita">
+              <span class="label-num">02</span>
+              Mensilità
+            </label>
+            <div class="input-row">
+              <input type="number" id="mensilita" placeholder="13" min="12" max="14" step="1" autocomplete="off" />
+              <span class="input-adorn input-adorn--right" aria-hidden="true">mesi</span>
+            </div>
+            <span class="field-hint">13 o 14 con tredicesima / quattordicesima</span>
+          </div>
 
-        <button id="calcola">Calcola</button>
-      </section>
+          <div class="field">
+            <label for="giorni">
+              <span class="label-num">03</span>
+              Giorni lavorati
+            </label>
+            <div class="input-row">
+              <input type="number" id="giorni" placeholder="365" min="1" max="365" step="1" autocomplete="off" />
+              <span class="input-adorn input-adorn--right" aria-hidden="true">gg</span>
+            </div>
+            <span class="field-hint">365 per anno intero, meno per anno parziale</span>
+          </div>
+        </div>
 
-      <section id="risultato"></section>
-    </main>
+        <button id="calcola" type="button" aria-label="Calcola stipendio netto">
+          <span class="btn-label">Calcola netto</span>
+          <span class="btn-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </button>
+      </main>
+
+      <section id="risultato" aria-live="polite" aria-label="Risultati del calcolo"></section>
+
+      <footer class="site-footer">
+        <p>Calcolo basato su aliquote IRPEF 2026 · Contributi INPS vigenti</p>
+        <p class="footer-note">Solo a scopo indicativo — non costituisce consulenza fiscale</p>
+      </footer>
+    </div>
     <script type="module" src="./src/ui.js"></script>
   </body>
 </html>

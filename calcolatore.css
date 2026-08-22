@@ -1,0 +1,663 @@
+/* ============================================================
+   CUSTOM PROPERTIES
+============================================================ */
+:root {
+  --c-bg: #04080f;
+  --c-surface: #09152a;
+  --c-surface-2: #0d1c38;
+  --c-border: rgba(100, 150, 255, 0.07);
+  --c-border-2: rgba(100, 150, 255, 0.13);
+  --c-accent: #00cba9;
+  --c-accent-lo: rgba(0, 203, 169, 0.1);
+  --c-accent-md: rgba(0, 203, 169, 0.22);
+  --c-accent-glow: rgba(0, 203, 169, 0.2);
+  --c-text-1: #dde8ff;
+  --c-text-2: #5e7a9c;
+  --c-text-3: #334d6a;
+  --f-mono: "JetBrains Mono", "Fira Code", monospace;
+  --f-sans: "Inter", system-ui, sans-serif;
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   RESET
+============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================================
+   BASE
+============================================================ */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--c-bg);
+  color: var(--c-text-1);
+  font-family: var(--f-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   BACKGROUND
+============================================================ */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(0, 203, 169, 0.18) 1px, transparent 1px);
+  background-size: 40px 40px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 25%, black 0%, transparent 100%);
+  mask-image: radial-gradient(ellipse 75% 70% at 50% 25%, black 0%, transparent 100%);
+}
+
+.bg-glow {
+  position: fixed;
+  top: -25vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(700px, 90vw);
+  height: 50vh;
+  background: radial-gradient(ellipse, rgba(0, 203, 169, 0.09) 0%, transparent 68%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 72px 24px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ============================================================
+   HEADER
+============================================================ */
+.site-header {
+  text-align: center;
+  animation: fade-up 0.7s var(--ease-expo) both;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+  margin-bottom: 24px;
+}
+
+.eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+h1 {
+  font-family: var(--f-mono);
+  font-size: clamp(2.1rem, 6.5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--c-text-1);
+  margin-bottom: 18px;
+}
+
+h1 em {
+  font-style: normal;
+  color: var(--c-accent);
+}
+
+.header-desc {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--c-text-2);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   CALCULATOR CARD
+============================================================ */
+.calc-card {
+  position: relative;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  animation: fade-up 0.7s 0.08s var(--ease-expo) both;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 0 0 1px rgba(0, 203, 169, 0.03),
+    0 32px 72px rgba(0, 0, 0, 0.5);
+}
+
+.calc-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 203, 169, 0.55), transparent);
+}
+
+.calc-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, rgba(0, 203, 169, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ============================================================
+   INPUTS GRID
+============================================================ */
+.inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.field--full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 480px) {
+  .inputs-grid {
+    grid-template-columns: 1fr;
+  }
+  .field--full {
+    grid-column: unset;
+  }
+}
+
+/* ============================================================
+   FIELD
+============================================================ */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-text-2);
+  cursor: default;
+  user-select: none;
+}
+
+.label-num {
+  color: var(--c-text-3);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.field-hint {
+  font-size: 11px;
+  color: var(--c-text-3);
+  line-height: 1.45;
+  padding-left: 1px;
+}
+
+/* ============================================================
+   INPUT ROW
+============================================================ */
+.input-row {
+  display: flex;
+  align-items: stretch;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--c-border-2);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.input-row:focus-within {
+  border-color: var(--c-accent);
+  box-shadow:
+    0 0 0 3px var(--c-accent-lo),
+    0 0 28px var(--c-accent-glow);
+}
+
+.input-adorn {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  color: var(--c-text-3);
+  background: rgba(255, 255, 255, 0.02);
+  border-right: 1px solid var(--c-border);
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.input-adorn--right {
+  border-right: none;
+  border-left: 1px solid var(--c-border);
+}
+
+input[type="number"] {
+  flex: 1;
+  min-width: 0;
+  padding: 15px 14px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--f-mono);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--c-text-1);
+  letter-spacing: -0.02em;
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type="number"]::placeholder {
+  color: var(--c-text-3);
+  font-weight: 300;
+  opacity: 1;
+}
+
+/* ============================================================
+   BUTTON
+============================================================ */
+#calcola {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 17px 32px;
+  background: var(--c-accent);
+  color: #030c14;
+  border: none;
+  border-radius: var(--r-md);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.22s ease;
+}
+
+#calcola::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(130deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+#calcola::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+#calcola:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 32px rgba(0, 203, 169, 0.38),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+#calcola:hover::before {
+  opacity: 1;
+}
+
+#calcola:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 203, 169, 0.22);
+}
+
+#calcola:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
+.btn-label {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-arrow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s ease;
+}
+
+#calcola:hover .btn-arrow {
+  transform: translateX(5px);
+}
+
+/* ============================================================
+   RISULTATO — stili per il contenuto iniettato da JS
+============================================================ */
+#risultato:not(:empty) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fade-up 0.55s var(--ease-expo) both;
+}
+
+#risultato h2 {
+  font-family: var(--f-mono);
+  font-size: clamp(1.8rem, 5.5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--c-accent);
+  line-height: 1.1;
+  animation: count-in 0.5s var(--ease-expo) both;
+}
+
+#risultato h3 {
+  font-family: var(--f-mono);
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  font-weight: 400;
+  color: var(--c-text-2);
+  letter-spacing: -0.01em;
+  margin-top: -6px;
+  animation: count-in 0.5s 0.06s var(--ease-expo) both;
+}
+
+#risultato table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.38);
+  animation: fade-up 0.5s 0.08s var(--ease-expo) both;
+}
+
+#risultato thead {
+  background: var(--c-surface-2);
+  position: relative;
+}
+
+#risultato thead::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--c-border-2);
+}
+
+#risultato thead th {
+  padding: 11px 18px;
+  font-family: var(--f-mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+  text-align: left;
+}
+
+#risultato thead th:nth-child(2),
+#risultato thead th:nth-child(3) {
+  text-align: right;
+}
+
+#risultato tbody tr {
+  border-bottom: 1px solid var(--c-border);
+  transition: background 0.15s ease;
+  animation: row-in 0.38s var(--ease-expo) both;
+}
+
+#risultato tbody tr:nth-child(1) {
+  animation-delay: 0.06s;
+}
+#risultato tbody tr:nth-child(2) {
+  animation-delay: 0.1s;
+}
+#risultato tbody tr:nth-child(3) {
+  animation-delay: 0.14s;
+}
+#risultato tbody tr:nth-child(4) {
+  animation-delay: 0.18s;
+}
+#risultato tbody tr:nth-child(5) {
+  animation-delay: 0.22s;
+}
+#risultato tbody tr:nth-child(6) {
+  animation-delay: 0.26s;
+}
+#risultato tbody tr:nth-child(7) {
+  animation-delay: 0.3s;
+}
+#risultato tbody tr:nth-child(8) {
+  animation-delay: 0.34s;
+}
+#risultato tbody tr:nth-child(n + 9) {
+  animation-delay: 0.37s;
+}
+
+#risultato tbody tr:last-child {
+  border-bottom: none;
+  background: rgba(0, 203, 169, 0.06);
+}
+#risultato tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+#risultato tbody tr:last-child:hover {
+  background: rgba(0, 203, 169, 0.09);
+}
+
+#risultato tbody td {
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--c-text-1);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+#risultato tbody td:nth-child(2) {
+  font-family: var(--f-mono);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+#risultato tbody td:nth-child(3) {
+  text-align: right;
+}
+
+#risultato tbody td small {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--c-text-3);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+#risultato tbody tr:last-child td {
+  color: var(--c-accent);
+  font-weight: 600;
+}
+#risultato tbody tr:last-child td:nth-child(2) {
+  font-size: 16px;
+}
+
+@media (max-width: 420px) {
+  #risultato thead th:nth-child(3),
+  #risultato tbody td:nth-child(3) {
+    display: none;
+  }
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+.site-footer {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.site-footer p {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--c-text-3);
+  line-height: 1.65;
+}
+
+.footer-note {
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   ANIMATIONS
+============================================================ */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes count-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.65);
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 560px) {
+  .page-wrap {
+    padding: 48px 18px 48px;
+  }
+  .calc-card {
+    padding: 28px 22px;
+  }
+}
+
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--c-border-2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-text-3);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border-2) transparent;
+}

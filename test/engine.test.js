@@ -2,11 +2,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-    calcolaAddizionali,
+  calcolaAddizionali,
   calcolaContributiInps,
   calcolaCuneoFiscale,
   calcolaDetrazioneLavoroDipendente,
   calcolaIrpefLorda,
+  calcolaNetto,
   calcolaTrattamentoIntegrativo,
 } from "../src/engine.js";
 import { CONFIG_2026 } from "../src/config-2026.js";
@@ -224,4 +225,42 @@ test("calcolaAddizionali — un euro sopra soglia (23.001), effetto scalino", ()
   const risultato = calcolaAddizionali(23001, CONFIG_2026);
   assert.ok(Math.abs(risultato.regionale - 310.9158) < 0.01);
   assert.ok(Math.abs(risultato.comunale - 184.008) < 0.01);
+});
+
+// Caso completo, RAL 30.000 — verifica ogni voce della catena, non solo il totale.
+test("calcolaNetto — RAL 30.000, 365 giorni, 13 mensilità", () => {
+  const risultato = calcolaNetto(30000, 365, 13, CONFIG_2026);
+
+  assert.ok(Math.abs(risultato.contributiInps - 2757) < 0.01);
+  assert.ok(Math.abs(risultato.imponibileFiscale - 27243) < 0.01);
+  assert.ok(Math.abs(risultato.irpefLorda - 6265.89) < 0.01);
+  assert.ok(Math.abs(risultato.detrazioneLavoroDipendente - 2044.258) < 0.01);
+  assert.ok(Math.abs(risultato.cuneoFiscale.sommaEsente - 0) < 0.01);
+  assert.ok(Math.abs(risultato.cuneoFiscale.ulterioreDetrazione - 1000) < 0.01);
+  assert.ok(Math.abs(risultato.irpefNetta - 3221.632) < 0.01);
+  assert.ok(Math.abs(risultato.trattamentoIntegrativo - 0) < 0.01);
+  assert.ok(Math.abs(risultato.addizionali.regionale - 377.9394) < 0.01);
+  assert.ok(Math.abs(risultato.addizionali.comunale - 217.944) < 0.01);
+  assert.ok(Math.abs(risultato.nettoAnnuo - 23425.4846) < 0.01);
+  assert.ok(Math.abs(risultato.nettoMensile - 1801.9604) < 0.01);
+});
+
+test("calcolaNetto — RAL 25.000, estremo basso range", () => {
+  const risultato = calcolaNetto(25000, 365, 13, CONFIG_2026);
+  assert.ok(Math.abs(risultato.nettoAnnuo - 20569.6505) < 0.01);
+  assert.ok(Math.abs(risultato.nettoMensile - 1582.2808) < 0.01);
+});
+
+test("calcolaNetto — RAL 35.000, estremo alto range", () => {
+  const risultato = calcolaNetto(35000, 365, 13, CONFIG_2026);
+  assert.ok(Math.abs(risultato.nettoAnnuo - 26032.1808) < 0.01);
+  assert.ok(Math.abs(risultato.nettoMensile - 2002.4754) < 0.01);
+});
+
+// RC sotto 15.000: fa scattare davvero il trattamento integrativo (capienza soddisfatta).
+test("calcolaNetto — RAL 14.000, trattamento integrativo capiente", () => {
+  const risultato = calcolaNetto(14000, 365, 13, CONFIG_2026);
+  assert.ok(Math.abs(risultato.trattamentoIntegrativo - 1200) < 0.01);
+  assert.ok(Math.abs(risultato.nettoAnnuo - 13461.7534) < 0.01);
+  assert.ok(Math.abs(risultato.nettoMensile - 1035.5195) < 0.01);
 });

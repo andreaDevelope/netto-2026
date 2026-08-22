@@ -45,12 +45,14 @@ export function calcolaIrpefLorda(imponibileFiscale, config) {
 
 /**
  * Tronca un numero a 4 cifre decimali, SENZA arrotondare.
+ * L'epsilon compensa il rumore di virgola mobile (es. 0.4075 memorizzato come 0.40749999999997):
  * Richiesto esplicitamente dalla norma per il rapporto nelle formule art. 13 TUIR.
  * @param {number} valore
  * @returns {number}
  */
 function truncate4(valore) {
-  return Math.trunc(valore * 10000) / 10000;
+  const epsilon = 1e-9;
+  return Math.trunc((valore + epsilon) * 10000) / 10000;
 }
 
 /**
@@ -91,7 +93,6 @@ export function calcolaDetrazioneLavoroDipendente(redditoComplessivo, giorniLavo
 
   const ragguagliata = conMaggiorazione * (giorniLavorati / 365);
 
-  // il pavimento minimo esiste SOLO nella fascia bassa (art. 13 co. 1 lett. a) — non è un floor universale
   if (redditoComplessivo <= sogliaBassa) {
     return Math.max(ragguagliata, minimoTempoIndeterminato);
   }
@@ -162,4 +163,48 @@ export function calcolaAddizionali(imponibileFiscale, config) {
   const comunale = imponibileFiscale > config.addizionaleComunaleMilano.sogliaEsenzione ? imponibileFiscale * config.addizionaleComunaleMilano.aliquota : 0;
 
   return { regionale, comunale };
+}
+
+/**
+ * Orchestratrice: monta l'intera catena RAL → netto annuo/mensile.
+ * @param {number} ral
+ * @param {number} giorniLavorati
+ * @param {number} mensilita
+ * @param {typeof import('../src/config-2026.js').CONFIG_2026} config
+ */
+export function calcolaNetto(ral, giorniLavorati, mensilita, config) {
+  const contributiInps = calcolaContributiInps(ral, config.inps);
+  const imponibileFiscale = ral - contributiInps;
+  const redditoComplessivo = imponibileFiscale; // semplificazione dichiarata: nessun altro reddito
+
+  const irpefLorda = calcolaIrpefLorda(imponibileFiscale, config.irpef);
+  const detrazioneLavoroDipendente = calcolaDetrazioneLavoroDipendente(redditoComplessivo, giorniLavorati, config.detrazioneLavoroDipendente);
+
+  const cuneoFiscale = calcolaCuneoFiscale(redditoComplessivo, config.cuneoFiscale);
+
+  const irpefNetta = Math.max(irpefLorda - detrazioneLavoroDipendente - cuneoFiscale.ulterioreDetrazione, 0);
+
+  // capienza: confronta la LORDA (non la netta) con la detrazione art. 13 — indipendente dal cuneo
+  const trattamentoIntegrativoCandidato = calcolaTrattamentoIntegrativo(redditoComplessivo, giorniLavorati, config.trattamentoIntegrativo);
+  const trattamentoIntegrativo = irpefLorda > detrazioneLavoroDipendente ? trattamentoIntegrativoCandidato : 0;
+
+  const addizionali = calcolaAddizionali(imponibileFiscale, config);
+
+  const nettoAnnuo = ral - contributiInps - irpefNetta - addizionali.regionale - addizionali.comunale + cuneoFiscale.sommaEsente + trattamentoIntegrativo;
+
+  const nettoMensile = nettoAnnuo / mensilita;
+
+  return {
+    ral,
+    contributiInps,
+    imponibileFiscale,
+    irpefLorda,
+    detrazioneLavoroDipendente,
+    cuneoFiscale,
+    irpefNetta,
+    trattamentoIntegrativo,
+    addizionali,
+    nettoAnnuo,
+    nettoMensile,
+  };
 }

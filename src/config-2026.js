@@ -1,6 +1,7 @@
+// @ts-check
+
 /**
  * config-2026.js
- * ---------------------------------------------------------------------------
  * Parametri normativi per il calcolo dello stipendio netto — anno d'imposta 2026.
  * Caso standard: dipendente privato, tempo indeterminato, residenza Milano (Lombardia).
  *
@@ -17,15 +18,14 @@
  */
 
 export const CONFIG_2026 = {
-
   // ---------------------------------------------------------------------
   // 1) CONTRIBUTI INPS A CARICO DIPENDENTE
   // Fonte: circolare INPS n. 6/2026; art. 3-ter D.L. 384/1992 (aliquota aggiuntiva 1%)
   // ---------------------------------------------------------------------
   inps: {
-    aliquotaOrdinaria: 0.0919,          // 9,19% sulla RAL, fascia base
-    aliquotaAggiuntiva: 0.0119,         // 10,19% = 9,19% + 1% sulla quota eccedente la prima fascia
-    primaFasciaRetribuzionePensionabile: 56224,   // €/anno 2026 — sopra questa soglia scatta l'aliquota aggiuntiva
+    aliquotaOrdinaria: 0.0919, // 9,19% sulla RAL, fascia base
+    aliquotaAggiuntiva: 0.1019, // 10,19% = 9,19% + 1% sulla quota eccedente la prima fascia
+    primaFasciaRetribuzionePensionabile: 56224, // €/anno 2026 — sopra questa soglia scatta l'aliquota aggiuntiva
     massimaleContributivoAnnuo: 122295, // €/anno 2026 — oltre questo importo non si versano più contributi
   },
 
@@ -36,9 +36,9 @@ export const CONFIG_2026 = {
   // ---------------------------------------------------------------------
   irpef: {
     scaglioni: [
-      { limiteSuperiore: 28000,     aliquota: 0.23 },
-      { limiteSuperiore: 50000,     aliquota: 0.33 },
-      { limiteSuperiore: Infinity,  aliquota: 0.43 },
+      { limiteSuperiore: 28000, aliquota: 0.23 },
+      { limiteSuperiore: 50000, aliquota: 0.33 },
+      { limiteSuperiore: Infinity, aliquota: 0.43 },
     ],
   },
 
@@ -50,9 +50,9 @@ export const CONFIG_2026 = {
   // ---------------------------------------------------------------------
   detrazioneLavoroDipendente: {
     sogliaBassa: 15000,
-    importoFisso: 1955,              // per reddito complessivo <= 15.000 €
-    minimoTempoIndeterminato: 1380,  // pavimento minimo, tempo indeterminato
-    minimoTempoDeterminato: 690,     // pavimento minimo, tempo determinato (non usato nel caso standard)
+    importoFisso: 1955, // per reddito complessivo <= 15.000 €
+    minimoTempoIndeterminato: 1380, // pavimento minimo, tempo indeterminato
+    minimoTempoDeterminato: 690, // pavimento minimo, tempo determinato (non usato nel caso standard)
 
     // 15.001 – 28.000 €: 1.910 + 1.190 × (28.000 − RC) / 13.000
     fasciaMedia: { sogliaMin: 15000, sogliaMax: 28000, base: 1910, moltiplicatore: 1190, divisore: 13000, riferimento: 28000 },
@@ -82,9 +82,9 @@ export const CONFIG_2026 = {
     sommaEsente: {
       sogliaMassima: 20000,
       scaglioni: [
-        { sogliaMax: 8500,   aliquota: 0.071, massimo: 603.50 },
-        { sogliaMax: 15000,  aliquota: 0.053, massimo: 795 },
-        { sogliaMax: 20000,  aliquota: 0.048, massimo: 960 },
+        { sogliaMax: 8500, aliquota: 0.071, massimo: 603.5 },
+        { sogliaMax: 15000, aliquota: 0.053, massimo: 795 },
+        { sogliaMax: 20000, aliquota: 0.048, massimo: 960 },
       ],
       metodo: "piatto", // non progressivo — vedi ambiguità sopra
     },
@@ -93,55 +93,45 @@ export const CONFIG_2026 = {
     // Fonte: art. 1 co. 6 L. 207/2024
     ulterioreDetrazione: {
       sogliaMin: 20000,
-      sogliaMedia: 32000,   // fino a qui: importo fisso 1.000 €
-      sogliaMax: 40000,     // oltre: si azzera
+      sogliaMedia: 32000, // fino a qui: importo fisso 1.000 €
+      sogliaMax: 40000, // oltre: si azzera
       importoFisso: 1000,
       divisoreRiduzione: 8000, // formula: 1.000 × (40.000 − RC) / 8.000 tra 32.000 e 40.000
     },
   },
 
-  // ---------------------------------------------------------------------
   // 5) TRATTAMENTO INTEGRATIVO (ex bonus Renzi)
   // Fonte: D.L. 3/2020, confermato per il 2026
   // Condizione: spetta solo se l'imposta lorda supera la detrazione art. 13
-  // ---------------------------------------------------------------------
   trattamentoIntegrativo: {
     sogliaMassima: 15000,
     importoAnnuo: 1200,
   },
 
-  // ---------------------------------------------------------------------
   // 6) ADDIZIONALE REGIONALE — LOMBARDIA
   // Fonte: art. 72 l.r. Lombardia 14 luglio 2003, n. 10
   // Progressiva per scaglioni (stessi scaglioni IRPEF pre-riforma, mantenuti dalla norma regionale)
-  // ---------------------------------------------------------------------
   addizionaleRegionaleLombardia: {
     scaglioni: [
-      { limiteSuperiore: 15000,    aliquota: 0.0123 },
-      { limiteSuperiore: 28000,    aliquota: 0.0158 },
-      { limiteSuperiore: 50000,    aliquota: 0.0172 },
+      { limiteSuperiore: 15000, aliquota: 0.0123 },
+      { limiteSuperiore: 28000, aliquota: 0.0158 },
+      { limiteSuperiore: 50000, aliquota: 0.0172 },
       { limiteSuperiore: Infinity, aliquota: 0.0173 },
     ],
   },
 
-  // ---------------------------------------------------------------------
   // 7) ADDIZIONALE COMUNALE — MILANO
   // Fonte: delibera comunale Milano (aliquota 2025, confermata per il 2026)
   // Aliquota UNICA (non a scaglioni). Esenzione totale sotto soglia — NON è una
   // franchigia: superata la soglia, l'aliquota si applica sull'INTERO imponibile.
-  // ---------------------------------------------------------------------
   addizionaleComunaleMilano: {
     aliquota: 0.008,
     sogliaEsenzione: 23000, // sotto o pari: zero. Sopra: 0,8% su tutto.
   },
 
-  // ---------------------------------------------------------------------
-  // 8) PARAMETRI DI INPUT CON DEFAULT
-  // Esposti come input perché la normativa è sensibile a questi valori.
-  // ---------------------------------------------------------------------
+  // 8) PARAMETRI DI INPUT CON DEFAULT esposti come input perché la normativa è sensibile a questi valori.
   default: {
-    mensilita: 13,      // cambia solo il divisore del netto mensile, non le imposte
+    mensilita: 13, // cambia solo il divisore del netto mensile, non le imposte
     giorniLavorati: 365, // incide sul ragguaglio delle detrazioni
   },
-
 };

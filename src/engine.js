@@ -97,3 +97,35 @@ export function calcolaDetrazioneLavoroDipendente(redditoComplessivo, giorniLavo
   }
   return ragguagliata;
 }
+
+/**
+ * Calcola il cuneo fiscale: somma esente (RC ≤ 20.000) o ulteriore detrazione (20.000 < RC ≤ 40.000).
+ * I due binari sono mutuamente esclusivi.
+ * Fonte: art. 1 co. 4 e co. 6 L. 207/2024, reso strutturale da L. 199/2025.
+ * @param {number} redditoComplessivo
+ * @param {{
+ *   sommaEsente: {sogliaMassima: number, scaglioni: Array<{sogliaMax: number, aliquota: number, massimo: number}>},
+ *   ulterioreDetrazione: {sogliaMin: number, sogliaMedia: number, sogliaMax: number, importoFisso: number, divisoreRiduzione: number}
+ * }} config
+ * @returns {{sommaEsente: number, ulterioreDetrazione: number}}
+ */
+export function calcolaCuneoFiscale(redditoComplessivo, config) {
+  if (redditoComplessivo <= config.sommaEsente.sogliaMassima) {
+    const scaglione = config.sommaEsente.scaglioni.find(s => redditoComplessivo <= s.sogliaMax);
+    if(scaglione === undefined) throw new Error("Scaglione non trovato per redditoComplessivo: " + redditoComplessivo);
+    const importo = Math.min(redditoComplessivo * scaglione.aliquota, scaglione.massimo);
+    return { sommaEsente: importo, ulterioreDetrazione: 0 };
+  }
+
+  const { sogliaMedia, sogliaMax, importoFisso, divisoreRiduzione } = config.ulterioreDetrazione;
+
+  if (redditoComplessivo > sogliaMax) {
+    return { sommaEsente: 0, ulterioreDetrazione: 0 };
+  }
+  if (redditoComplessivo <= sogliaMedia) {
+    return { sommaEsente: 0, ulterioreDetrazione: importoFisso };
+  }
+
+  const importo = importoFisso * (sogliaMax - redditoComplessivo) / divisoreRiduzione;
+  return { sommaEsente: 0, ulterioreDetrazione: importo };
+}

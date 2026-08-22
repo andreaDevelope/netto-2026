@@ -1,7 +1,7 @@
 // @ts-check
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { calcolaContributiInps, calcolaDetrazioneLavoroDipendente, calcolaIrpefLorda } from "../src/engine.js";
+import { calcolaContributiInps, calcolaCuneoFiscale, calcolaDetrazioneLavoroDipendente, calcolaIrpefLorda } from "../src/engine.js";
 import { CONFIG_2026 } from "../src/config-2026.js";
 
 // Caso base, ben dentro il range RAL 25-35k del task.
@@ -116,4 +116,18 @@ test("calcolaDetrazioneLavoroDipendente — fascia bassa con pochi giorni, scatt
   const risultato = calcolaDetrazioneLavoroDipendente(10000, 30, CONFIG_2026.detrazioneLavoroDipendente);
   // 1.955 × 30/365 = 160,68 → sotto 690, deve salire al minimo
   assert.equal(risultato, 690);
+});
+
+// Bordo esatto dove i due binari si toccano: RC=20.000 è ancora somma esente (4,8%, tetto 960€).
+test("calcolaCuneoFiscale — bordo esatto 20.000 (ancora somma esente)", () => {
+  const risultato = calcolaCuneoFiscale(20000, CONFIG_2026.cuneoFiscale);
+  assert.equal(risultato.sommaEsente, 960);
+  assert.equal(risultato.ulterioreDetrazione, 0);
+});
+
+// Un euro sopra: passa al binario detrazione.
+test("calcolaCuneoFiscale — 20.001, passa al binario detrazione", () => {
+  const risultato = calcolaCuneoFiscale(20001, CONFIG_2026.cuneoFiscale);
+  assert.equal(risultato.sommaEsente, 0);
+  assert.equal(risultato.ulterioreDetrazione, 1000);
 });

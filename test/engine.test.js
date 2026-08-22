@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+    calcolaAddizionali,
   calcolaContributiInps,
   calcolaCuneoFiscale,
   calcolaDetrazioneLavoroDipendente,
@@ -195,4 +196,32 @@ test("calcolaTrattamentoIntegrativo — RC fuori soglia", () => {
 test("calcolaTrattamentoIntegrativo — bordo esatto 15.000", () => {
   const risultato = calcolaTrattamentoIntegrativo(15000, 365, CONFIG_2026.trattamentoIntegrativo);
   assert.equal(risultato, 1200);
+});
+
+// Due scaglioni regionali attraversati, comunale sotto soglia.
+test("calcolaAddizionali — imponibile 20.000, comunale esente", () => {
+  const risultato = calcolaAddizionali(20000, CONFIG_2026);
+  assert.ok(Math.abs(risultato.regionale - 263.5) < 0.01);
+  assert.equal(risultato.comunale, 0);
+});
+
+// Tre scaglioni regionali attraversati, comunale sopra soglia.
+test("calcolaAddizionali — imponibile 30.000, comunale dovuta", () => {
+  const risultato = calcolaAddizionali(30000, CONFIG_2026);
+  assert.ok(Math.abs(risultato.regionale - 424.3) < 0.01);
+  assert.equal(risultato.comunale, 240);
+});
+
+// Bordo esatto esenzione comunale: 23.000 è ancora escluso (condizione è >, non >=).
+test("calcolaAddizionali — bordo esatto soglia comunale (23.000), ancora esente", () => {
+  const risultato = calcolaAddizionali(23000, CONFIG_2026);
+  assert.ok(Math.abs(risultato.regionale - 310.9) < 0.01);
+  assert.equal(risultato.comunale, 0);
+});
+
+// Un euro sopra: l'aliquota comunale scatta sull'INTERO imponibile, non solo sull'eccedenza — salto da 0€ a 184€.
+test("calcolaAddizionali — un euro sopra soglia (23.001), effetto scalino", () => {
+  const risultato = calcolaAddizionali(23001, CONFIG_2026);
+  assert.ok(Math.abs(risultato.regionale - 310.9158) < 0.01);
+  assert.ok(Math.abs(risultato.comunale - 184.008) < 0.01);
 });

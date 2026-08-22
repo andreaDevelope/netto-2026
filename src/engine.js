@@ -111,8 +111,8 @@ export function calcolaDetrazioneLavoroDipendente(redditoComplessivo, giorniLavo
  */
 export function calcolaCuneoFiscale(redditoComplessivo, config) {
   if (redditoComplessivo <= config.sommaEsente.sogliaMassima) {
-    const scaglione = config.sommaEsente.scaglioni.find(s => redditoComplessivo <= s.sogliaMax);
-    if(scaglione === undefined) throw new Error("Scaglione non trovato per redditoComplessivo: " + redditoComplessivo);
+    const scaglione = config.sommaEsente.scaglioni.find((s) => redditoComplessivo <= s.sogliaMax);
+    if (scaglione === undefined) throw new Error("Scaglione non trovato per redditoComplessivo: " + redditoComplessivo);
     const importo = Math.min(redditoComplessivo * scaglione.aliquota, scaglione.massimo);
     return { sommaEsente: importo, ulterioreDetrazione: 0 };
   }
@@ -126,7 +126,7 @@ export function calcolaCuneoFiscale(redditoComplessivo, config) {
     return { sommaEsente: 0, ulterioreDetrazione: importoFisso };
   }
 
-  const importo = importoFisso * (sogliaMax - redditoComplessivo) / divisoreRiduzione;
+  const importo = (importoFisso * (sogliaMax - redditoComplessivo)) / divisoreRiduzione;
   return { sommaEsente: 0, ulterioreDetrazione: importo };
 }
 
@@ -142,4 +142,24 @@ export function calcolaCuneoFiscale(redditoComplessivo, config) {
 export function calcolaTrattamentoIntegrativo(redditoComplessivo, giorniLavorati, config) {
   if (redditoComplessivo > config.sogliaMassima) return 0;
   return config.importoAnnuo * (giorniLavorati / 365);
+}
+
+/**
+ * Calcola addizionale regionale (Lombardia, progressiva) e comunale (Milano, aliquota unica con soglia).
+ * Fonte: art. 72 l.r. Lombardia 10/2003; delibera comunale Milano.
+ * L'addizionale regionale riusa la stessa logica a scaglioni dell'IRPEF (identica forma dati).
+ * @param {number} imponibileFiscale
+ * @param {{
+ *   addizionaleRegionaleLombardia: {scaglioni: Array<{limiteSuperiore: number, aliquota: number}>},
+ *   addizionaleComunaleMilano: {aliquota: number, sogliaEsenzione: number}
+ * }} config
+ * @returns {{regionale: number, comunale: number}}
+ */
+export function calcolaAddizionali(imponibileFiscale, config) {
+  const regionale = calcolaIrpefLorda(imponibileFiscale, config.addizionaleRegionaleLombardia);
+
+  // NON è una franchigia: sopra soglia, l'aliquota si applica sull'INTERO imponibile.
+  const comunale = imponibileFiscale > config.addizionaleComunaleMilano.sogliaEsenzione ? imponibileFiscale * config.addizionaleComunaleMilano.aliquota : 0;
+
+  return { regionale, comunale };
 }

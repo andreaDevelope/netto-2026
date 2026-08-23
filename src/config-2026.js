@@ -72,7 +72,7 @@ export const CONFIG_2026 = {
     // RC <= 20.000 €: SOMMA ESENTE (non è una detrazione, non concorre al reddito)
     // Fonte: INPS (nota CU 2026 / portale INPS) — art. 1 co. 4 L. 207/2024
     //
-    // ⚠️ AMBIGUITÀ NORMATIVA (vedi README §7):
+    //⚠️ AMBIGUITÀ NORMATIVA (vedi docs/06-ambiguita-normative.md):
     // Le fonti indicano tre percentuali con importi massimi:
     //   7,1% (fino a 8.500€, max 603,50€) · 5,3% (8.500-15.000€, max 795€) · 4,8% (15.000-20.000€, max 960€)
     // I massimi tornano SOLO se la percentuale è applicata piatta sull'intero reddito da lavoro

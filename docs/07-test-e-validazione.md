@@ -17,12 +17,16 @@ Confronto su RAL 30.000 € (Milano, tempo indeterminato, 13 mensilità, 365 gio
 | Calcolatore Jet HR | 23.395 €    | −30,48 € (0,13%) |
 | tuttocalcolato.it  | 22.425,52 € | −999,96 € (4,3%) |
 
-Lo scostamento con tuttocalcolato.it è isolabile a una voce sola. Tutte le altre
-combaciano al centesimo (INPS 2.757, imponibile 27.243, IRPEF lorda 6.266,
-detrazione art. 13 2.044, addizionale regionale 378, comunale 218), ma il loro
-dettaglio riporta come unica detrazione applicata quella dell'art. 13 TUIR:
-non compare l'ulteriore detrazione di 1.000 € prevista dall'art. 1 co. 6
-L. 207/2024 per la fascia di reddito complessivo 20.000-32.000 €.
+Lo scostamento con tuttocalcolato.it è isolabile a una voce sola. Tutte le
+altre combaciano all'euro (INPS 2.757, imponibile 27.243, IRPEF lorda 6.266,
+detrazione art. 13 2.044, addizionale regionale 378, comunale 218 — valori
+mostrati arrotondati; il nostro motore tiene i decimali fino al risultato
+finale), ma il loro dettaglio riporta come unica detrazione applicata quella
+dell'art. 13 TUIR: non compare l'ulteriore detrazione di 1.000 € prevista
+dall'art. 1 co. 6 L. 207/2024 per la fascia di reddito complessivo
+20.000-32.000 €. Rieseguendo il nostro motore senza quella detrazione, il
+risultato si allinea al loro entro 3,5 centesimi — la differenza residua è
+arrotondamento.
 
 Non è escluso che il loro tool la gestisca in un'opzione non esplorata. Il
 confronto è riportato perché isola con precisione dove due modelli divergono.

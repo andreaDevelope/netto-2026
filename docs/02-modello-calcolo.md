@@ -16,7 +16,8 @@ corrispondente in [config-2026.js](../src/config-2026.js).
      = NETTO ANNUO ÷ mensilità = NETTO MENSILE
 
 Principio chiave: **contributi e imposte non condividono la base imponibile**.
-I contributi si calcolano sulla RAL; l'IRPEF su ciò che resta dopo i contributi.
+I contributi si calcolano sulla RAL (fino al massimale contributivo);
+l'IRPEF su ciò che resta dopo i contributi.
 
 ## Voce per voce
 
@@ -33,9 +34,9 @@ I contributi si calcolano sulla RAL; l'IRPEF su ciò che resta dopo i contributi
 
 ## Due punti che il codice gestisce esplicitamente
 
-**Cuneo fiscale, due binari mutuamente esclusivi.** Sotto i 20.000 € di
-reddito complessivo è una somma esente (non concorre al reddito, si somma
-al netto). Tra 20.000 e 40.000 € è una detrazione (riduce l'IRPEF). Sono
+**Cuneo fiscale, due binari mutuamente esclusivi.** Fino a 20.000 € inclusi
+di reddito complessivo è una somma esente (non concorre al reddito, si somma
+al netto). Da 20.001 a 40.000 € è una detrazione (riduce l'IRPEF). Sono
 meccanismi diversi, per questo `calcolaCuneoFiscale` restituisce i due
 importi separati invece di un totale unico.
 
@@ -47,4 +48,6 @@ la detrazione art. 13. La condizione si verifica in `calcolaNetto`, perché
 
 `mensilità` (default 13) e `giorni lavorati` (default 365) sono esposti come
 input perché la normativa vi è sensibile: le mensilità cambiano solo il
-divisore del netto mensile, i giorni incidono sul ragguaglio delle detrazioni.
+divisore del netto mensile; i giorni incidono sul ragguaglio della detrazione
+art. 13 e del trattamento integrativo (non sull'ulteriore detrazione del
+cuneo fiscale, che non è ragguagliata ai giorni).

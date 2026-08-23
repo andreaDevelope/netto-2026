@@ -4,7 +4,7 @@ Calcolatore di stipendio netto da RAL, anno d'imposta 2026. Caso standard:
 dipendente privato a tempo indeterminato, residente a Milano, nessuna
 agevolazione particolare.
 
-[Prova il calcolatore](https://github.com/andreaDevelope/netto-2026)
+[Prova il calcolatore](https://andreadevelope.github.io/netto-2026/)
 
 ## Come funziona
 

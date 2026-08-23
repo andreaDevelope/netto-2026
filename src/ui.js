@@ -5,6 +5,17 @@ import { CONFIG_2026 } from "./config-2026.js";
 const euroBase = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
 
 /**
+ * Limiti di input, identici agli attributi `min`/`max` dichiarati in index.html.
+ * Gli attributi HTML da soli non bastano: non impediscono di digitare un valore
+ * fuori range, e il motore assume input già validati (vedi docs/08-limiti-e-roadmap.md).
+ * Qui non si aggiungono vincoli nuovi, si fanno rispettare quelli già dichiarati.
+ */
+const LIMITI = {
+  mensilita: { min: 12, max: 14 },
+  giorni: { min: 1, max: 365 },
+};
+
+/**
  * Formatta un importo in euro, sostituendo il punto delle migliaia con un punto medio (·),
  * coerente con lo stile tipografico tecnico del resto dell'interfaccia.
  * @param {number} valore
@@ -52,6 +63,16 @@ function calcolaEMostra() {
 
   if (ral <= 0) {
     contenitore.innerHTML = "<p>Inserisci una RAL maggiore di zero.</p>";
+    return;
+  }
+
+  if (mensilita < LIMITI.mensilita.min || mensilita > LIMITI.mensilita.max) {
+    contenitore.innerHTML = `<p>Le mensilità devono essere tra ${LIMITI.mensilita.min} e ${LIMITI.mensilita.max}.</p>`;
+    return;
+  }
+
+  if (giorni < LIMITI.giorni.min || giorni > LIMITI.giorni.max) {
+    contenitore.innerHTML = `<p>I giorni lavorati devono essere tra ${LIMITI.giorni.min} e ${LIMITI.giorni.max}.</p>`;
     return;
   }
 

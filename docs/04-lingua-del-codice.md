@@ -5,8 +5,14 @@ Uso `// @ts-check` + JSDoc invece di TypeScript: stesso controllo tipi in editor
 | Categoria | Lingua | Esempi |
 |---|---|---|
 | Termini normativi | italiano | `aliquota`, `scaglioni`, `imponibileFiscale`, `detrazioneLavoroDipendente`, `cuneoFiscale`, `addizionaleComunaleMilano` |
-| Meccanica di programma | inglese | `calculate`, `sum`, `clamp`, `truncate`, nomi dei test |
-| Commenti, documentazione | italiano | fonti italiane, lettori italiani |
+| Funzioni che toccano il dominio | italiano, **verbo incluso** | `calcolaIrpefLorda`, `calcolaCuneoFiscale`, `calcolaCostoAzienda` |
+| Helper senza dominio | inglese | `truncate4` |
+| Commenti, documentazione, nomi dei test | italiano | fonti italiane, lettori italiani |
+
+Il verbo resta italiano quando il resto del nome lo è. `calcolaDetrazioneLavoroDipendente`
+si legge come una frase sola; `calculateDetrazioneLavoroDipendente` obbliga a cambiare
+lingua a metà identificatore, in cambio di nulla. L'inglese è riservato a ciò che non ha
+dominio dentro: `truncate4` tronca un numero e basta, non sa cosa sia una detrazione.
 
 ## Il motivo principale: l'inglese perde informazione
 

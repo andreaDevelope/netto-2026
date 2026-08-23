@@ -302,3 +302,77 @@ test("calcolaCostoAzienda — RAL a zero", () => {
   const risultato = calcolaCostoAzienda(0, CONFIG_2026.costoAzienda);
   assert.equal(risultato.costoTotale, 0);
 });
+
+// ---------------------------------------------------------------------
+// Effetti a scalino — documentati in docs/11-effetti-a-scalino.md.
+// Ogni test verifica prima il SEGNO del salto (la proprietà: qui il netto
+// non è graduale) e poi la sua entità. Se una modifica al motore o al
+// config attenuasse uno scalino, il test dice quale soglia è cambiata.
+// ---------------------------------------------------------------------
+
+// RC supera 15.000: il trattamento integrativo (1.200 €) si azzera, ma la
+// detrazione art. 13 passa alla fascia media e risale di ~1.145 € — la
+// compensazione voluta dal legislatore non è esatta, e resta un salto negativo.
+test("effetto a scalino — RC oltre 15.000 (RAL 16.519), un euro in più fa perdere netto", () => {
+  const sotto = calcolaNetto(16518, 365, 13, CONFIG_2026);
+  const sopra = calcolaNetto(16519, 365, 13, CONFIG_2026);
+  const delta = sopra.nettoAnnuo - sotto.nettoAnnuo;
+
+  assert.ok(delta < 0, "sopra la soglia il netto deve scendere");
+  assert.ok(Math.abs(delta - -129.3905) < 0.01);
+  assert.equal(sotto.trattamentoIntegrativo, 1200);
+  assert.equal(sopra.trattamentoIntegrativo, 0);
+});
+
+// RC supera 20.000: il cuneo cambia binario, si perde la somma esente (960 €)
+// e si guadagna l'ulteriore detrazione (1.000 €). Scalino a favore, ma scalino.
+test("effetto a scalino — RC oltre 20.000 (RAL 22.025), il cuneo cambia binario", () => {
+  const sotto = calcolaNetto(22024, 365, 13, CONFIG_2026);
+  const sopra = calcolaNetto(22025, 365, 13, CONFIG_2026);
+  const delta = sopra.nettoAnnuo - sotto.nettoAnnuo;
+
+  assert.ok(delta > 0, "sopra la soglia il netto deve salire");
+  assert.ok(Math.abs(delta - 40.6852) < 0.01);
+  // 959,9997 €: a RC 19.999,99 il 4,8% resta un soffio sotto il tetto di 960 €,
+  // che si tocca solo a RC = 20.000 esatti.
+  assert.ok(Math.abs(sotto.cuneoFiscale.sommaEsente - 960) < 0.01);
+  assert.equal(sopra.cuneoFiscale.ulterioreDetrazione, 1000);
+});
+
+// Imponibile supera 23.000: l'addizionale comunale di Milano NON è una
+// franchigia — lo 0,8% si applica di colpo sull'intero imponibile.
+// È il salto più grande della catena.
+test("effetto a scalino — imponibile oltre 23.000 (RAL 25.328), addizionale comunale piena", () => {
+  const sotto = calcolaNetto(25327, 365, 13, CONFIG_2026);
+  const sopra = calcolaNetto(25328, 365, 13, CONFIG_2026);
+  const delta = sopra.nettoAnnuo - sotto.nettoAnnuo;
+
+  assert.ok(delta < 0, "sopra la soglia il netto deve scendere");
+  assert.ok(Math.abs(delta - -183.437) < 0.01);
+  assert.equal(sotto.addizionali.comunale, 0);
+  assert.ok(Math.abs(sopra.addizionali.comunale - 184) < 0.01);
+});
+
+// RC supera 25.000: entra tutta insieme la maggiorazione di 65 €
+// dell'art. 13 co. 1.1 TUIR.
+test("effetto a scalino — RC oltre 25.000 (RAL 27.531), entra la maggiorazione 65 €", () => {
+  const sotto = calcolaNetto(27530, 365, 13, CONFIG_2026);
+  const sopra = calcolaNetto(27531, 365, 13, CONFIG_2026);
+  const delta = sopra.nettoAnnuo - sotto.nettoAnnuo;
+
+  assert.ok(delta > 0, "sopra la soglia il netto deve salire");
+  assert.ok(Math.abs(delta - 65.5586) < 0.01);
+  assert.ok(sopra.detrazioneLavoroDipendente > sotto.detrazioneLavoroDipendente);
+});
+
+// RC supera 35.000: la stessa maggiorazione di 65 € esce tutta insieme.
+// Stessa norma del test precedente, vista dall'altro bordo.
+test("effetto a scalino — RC oltre 35.000 (RAL 38.543), esce la maggiorazione 65 €", () => {
+  const sotto = calcolaNetto(38542, 365, 13, CONFIG_2026);
+  const sopra = calcolaNetto(38543, 365, 13, CONFIG_2026);
+  const delta = sopra.nettoAnnuo - sotto.nettoAnnuo;
+
+  assert.ok(delta < 0, "sopra la soglia il netto deve scendere");
+  assert.ok(Math.abs(delta - -64.719) < 0.01);
+  assert.ok(sopra.detrazioneLavoroDipendente < sotto.detrazioneLavoroDipendente);
+});

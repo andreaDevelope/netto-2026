@@ -62,3 +62,4 @@ rifacimento (dettagli in
 7. [Test e validazione](docs/07-test-e-validazione.md)
 8. [Limiti noti e cosa farei con più tempo](docs/08-limiti-e-roadmap.md)
 9. [Fonti](docs/09-fonti.md)
+10. [Effetti a scalino](docs/11-effetti-a-scalino.md)

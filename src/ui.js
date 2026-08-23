@@ -1,5 +1,5 @@
 // @ts-check
-import { calcolaNetto } from "./engine.js";
+import { calcolaCostoAzienda, calcolaNetto } from "./engine.js";
 import { CONFIG_2026 } from "./config-2026.js";
 
 const euroBase = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
@@ -56,10 +56,12 @@ function calcolaEMostra() {
   }
 
   const r = calcolaNetto(ral, giorni, mensilita, CONFIG_2026);
+  const c = calcolaCostoAzienda(ral, CONFIG_2026.costoAzienda);
 
   contenitore.innerHTML = `
     <h2>Netto annuo: ${euro(r.nettoAnnuo)}</h2>
     <h3>Netto mensile (${mensilita} mensilità): ${euro(r.nettoMensile)}</h3>
+    <p class="costo-azienda-badge">Costo per l'azienda: <strong>${euro(c.costoTotale)}</strong></p>
 
     <table>
       <thead>
@@ -80,6 +82,22 @@ function calcolaEMostra() {
         ${riga("= Netto annuo", r.nettoAnnuo, "—")}
       </tbody>
     </table>
+
+    <details class="costo-azienda-details">
+      <summary>Costo per l'azienda — dettaglio</summary>
+      <table>
+        <thead>
+          <tr><th>Voce</th><th>Importo</th><th>Riferimento</th></tr>
+        </thead>
+        <tbody>
+          ${riga("RAL", ral, "—")}
+          ${riga("+ Contributi INPS datore", c.inpsDatore, "aliquota IVS 23,81% · INPS")}
+          ${riga("+ INAIL", c.inail, "0,4% · impiegato d'ufficio")}
+          ${riga("+ TFR", c.tfr, "art. 2120 c.c. · RAL/13,5 − 0,5% FAP")}
+          ${riga("= Costo azienda annuo", c.costoTotale, "—")}
+        </tbody>
+      </table>
+    </details>
   `;
 }
 

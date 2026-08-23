@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calcolatore Stipendio Netto — Lombardia / Milano 2026</title>
+    <title>Calcolatore Stipendio Netto — Italia 2026</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="./calcolatore.css" />
   </head>
   <body>
+    <input type="checkbox" id="theme-toggle" class="theme-toggle-input" />
+    <label for="theme-toggle" class="theme-toggle" aria-label="Cambia tema">
+      <span class="icon-dark">◐ DARK</span>
+      <span class="icon-light">☀ LIGHT</span>
+    </label>
+
     <div class="bg-grid" aria-hidden="true"></div>
     <div class="bg-glow" aria-hidden="true"></div>
 
@@ -23,7 +29,7 @@
           <span class="eyebrow-dot"></span>
           <span>Calcolatore fiscale · Lombardia / Milano 2026</span>
         </div>
-        <h1>
+        <h1 class="main-title">
           Quanto prendi<br />
           <em>davvero</em>?
         </h1>
@@ -33,7 +39,7 @@
       <main class="calc-card" role="main">
         <div class="inputs-grid">
           <div class="field field--full">
-            <label for="ral">
+            <label class="field-label" for="ral">
               <span class="label-num">01</span>
               RAL — Reddito Annuo Lordo
             </label>
@@ -45,7 +51,7 @@
           </div>
 
           <div class="field">
-            <label for="mensilita">
+            <label class="field-label" for="mensilita">
               <span class="label-num">02</span>
               Mensilità
             </label>
@@ -57,7 +63,7 @@
           </div>
 
           <div class="field">
-            <label for="giorni">
+            <label class="field-label" for="giorni">
               <span class="label-num">03</span>
               Giorni lavorati
             </label>
@@ -69,7 +75,7 @@
           </div>
         </div>
 
-        <button id="calcola" type="button" aria-label="Calcola stipendio netto">
+        <button id="calcola" class="btn-calcola" type="button" aria-label="Calcola stipendio netto">
           <span class="btn-label">Calcola netto</span>
           <span class="btn-arrow" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,6 +92,7 @@
         <p class="footer-note">Solo a scopo indicativo — non costituisce consulenza fiscale</p>
       </footer>
     </div>
+
     <script type="module" src="./src/ui.js"></script>
   </body>
 </html>

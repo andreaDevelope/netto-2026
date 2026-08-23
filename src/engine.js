@@ -208,3 +208,26 @@ export function calcolaNetto(ral, giorniLavorati, mensilita, config) {
     nettoMensile,
   };
 }
+
+/**
+ * Calcola il costo totale del dipendente per l'azienda: RAL + contributi
+ * datore + INAIL + TFR. Non ha relazione con calcolaNetto — sono due
+ * prospettive diverse sulla stessa RAL (dipendente vs datore di lavoro).
+ * Fonte: INPS (aliquota datore), art. 2120 c.c. (TFR), fyscal.it/calcoi.com (INAIL).
+ * @param {number} ral
+ * @param {{
+ *   inpsDatore: {aliquota: number},
+ *   inail: {aliquota: number},
+ *   tfr: {divisore: number, aliquotaFap: number}
+ * }} config
+ * @returns {{inpsDatore: number, inail: number, tfr: number, costoTotale: number}}
+ */
+export function calcolaCostoAzienda(ral, config) {
+  const inpsDatore = ral * config.inpsDatore.aliquota;
+  const inail = ral * config.inail.aliquota;
+  const tfr = (ral / config.tfr.divisore) - (ral * config.tfr.aliquotaFap);
+
+  const costoTotale = ral + inpsDatore + inail + tfr;
+
+  return { inpsDatore, inail, tfr, costoTotale };
+}

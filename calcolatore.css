@@ -1,42 +1,45 @@
-/* ============================================================
-   CUSTOM PROPERTIES
-============================================================ */
 :root {
-  --c-bg: #04080f;
-  --c-surface: #09152a;
-  --c-surface-2: #0d1c38;
-  --c-border: rgba(100, 150, 255, 0.07);
-  --c-border-2: rgba(100, 150, 255, 0.13);
-  --c-accent: #00cba9;
-  --c-accent-lo: rgba(0, 203, 169, 0.1);
-  --c-accent-md: rgba(0, 203, 169, 0.22);
-  --c-accent-glow: rgba(0, 203, 169, 0.2);
-  --c-text-1: #dde8ff;
-  --c-text-2: #5e7a9c;
-  --c-text-3: #334d6a;
-  --f-mono: "JetBrains Mono", "Fira Code", monospace;
-  --f-sans: "Inter", system-ui, sans-serif;
+  --bg: #132607;
+  --surface: #1a3209;
+  --surface-2: #1f3d0a;
+  --border: rgba(131, 134, 122, 0.18);
+  --border-2: rgba(131, 134, 122, 0.32);
+  --accent: #e8703a;
+  --accent-lo: rgba(232, 112, 58, 0.12);
+  --accent-glow: rgba(232, 112, 58, 0.28);
+  --text-1: #f5f5f5;
+  --text-2: #a8ac9e;
+  --text-3: #83867a;
+  --input-bg: rgba(0, 0, 0, 0.35);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --r-sm: 6px;
   --r-md: 12px;
   --r-lg: 16px;
   --r-xl: 22px;
-  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ============================================================
-   RESET
-============================================================ */
+/* Tema chiaro: attivato via :has(), niente JS */
+body:has(#theme-toggle:checked) {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-2: #f0f0ee;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-2: rgba(0, 0, 0, 0.13);
+  --accent: #e8703a;
+  --accent-lo: rgba(232, 112, 58, 0.1);
+  --accent-glow: rgba(232, 112, 58, 0.18);
+  --text-1: #1a1a1a;
+  --text-2: #4d5147;
+  --text-3: #8a8e85;
+  --input-bg: rgba(0, 0, 0, 0.03);
+}
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
-/* ============================================================
-   BASE
-============================================================ */
 html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -45,26 +48,32 @@ html {
 }
 
 body {
-  background-color: var(--c-bg);
-  color: var(--c-text-1);
-  font-family: var(--f-sans);
+  background-color: var(--bg);
+  color: var(--text-1);
+  font-family: "Inter", system-ui, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.6;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
-/* ============================================================
-   BACKGROUND
-============================================================ */
+/* ── Background decorations ── */
 .bg-grid {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: radial-gradient(circle, rgba(0, 203, 169, 0.18) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(232, 112, 58, 0.13) 1px, transparent 1px);
   background-size: 40px 40px;
   -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 25%, black 0%, transparent 100%);
   mask-image: radial-gradient(ellipse 75% 70% at 50% 25%, black 0%, transparent 100%);
+  transition: opacity 0.3s ease;
+}
+
+body:has(#theme-toggle:checked) .bg-grid {
+  opacity: 0.45;
 }
 
 .bg-glow {
@@ -74,14 +83,12 @@ body {
   transform: translateX(-50%);
   width: min(700px, 90vw);
   height: 50vh;
-  background: radial-gradient(ellipse, rgba(0, 203, 169, 0.09) 0%, transparent 68%);
+  background: radial-gradient(ellipse, rgba(232, 112, 58, 0.08) 0%, transparent 68%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* ============================================================
-   LAYOUT
-============================================================ */
+/* ── Layout ── */
 .page-wrap {
   position: relative;
   z-index: 1;
@@ -93,9 +100,52 @@ body {
   gap: 32px;
 }
 
-/* ============================================================
-   HEADER
-============================================================ */
+/* ── Theme toggle (checkbox nascosto + label stilizzata) ── */
+.theme-toggle-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 999px;
+  padding: 6px 14px 6px 10px;
+  cursor: pointer;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--text-2);
+  transition: all 0.22s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  user-select: none;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--text-1);
+}
+
+.icon-light {
+  display: none;
+}
+#theme-toggle:checked ~ .theme-toggle .icon-dark {
+  display: none;
+}
+#theme-toggle:checked ~ .theme-toggle .icon-light {
+  display: inline;
+}
+
+/* ── Header ── */
 .site-header {
   text-align: center;
   animation: fade-up 0.7s var(--ease-expo) both;
@@ -105,12 +155,12 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--c-accent);
+  color: var(--accent);
   margin-bottom: 24px;
 }
 
@@ -118,42 +168,40 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--c-accent);
+  background: var(--accent);
   animation: pulse-dot 2.4s ease-in-out infinite;
   flex-shrink: 0;
 }
 
-h1 {
-  font-family: var(--f-mono);
+.main-title {
+  font-family: "JetBrains Mono", monospace;
   font-size: clamp(2.1rem, 6.5vw, 3.5rem);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.03em;
-  color: var(--c-text-1);
+  color: var(--text-1);
   margin-bottom: 18px;
 }
 
-h1 em {
+.main-title em {
   font-style: normal;
-  color: var(--c-accent);
+  color: var(--accent);
 }
 
 .header-desc {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.7;
-  color: var(--c-text-2);
+  color: var(--text-2);
   max-width: 400px;
   margin: 0 auto;
 }
 
-/* ============================================================
-   CALCULATOR CARD
-============================================================ */
+/* ── Calc card ── */
 .calc-card {
   position: relative;
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--r-xl);
   padding: 40px 36px;
   display: flex;
@@ -161,9 +209,18 @@ h1 em {
   gap: 28px;
   animation: fade-up 0.7s 0.08s var(--ease-expo) both;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 0 0 1px rgba(0, 203, 169, 0.03),
-    0 32px 72px rgba(0, 0, 0, 0.5);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 32px 72px rgba(0, 0, 0, 0.32);
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+body:has(#theme-toggle:checked) .calc-card {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 8px 32px rgba(0, 0, 0, 0.07);
 }
 
 .calc-card::before {
@@ -173,21 +230,15 @@ h1 em {
   left: 12%;
   right: 12%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 203, 169, 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(232, 112, 58, 0.5), transparent);
+  transition: opacity 0.3s ease;
 }
 
-.calc-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--r-xl);
-  background: linear-gradient(135deg, rgba(0, 203, 169, 0.03) 0%, transparent 50%);
-  pointer-events: none;
+body:has(#theme-toggle:checked) .calc-card::before {
+  opacity: 0.6;
 }
 
-/* ============================================================
-   INPUTS GRID
-============================================================ */
+/* ── Inputs grid ── */
 .inputs-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -198,90 +249,80 @@ h1 em {
   grid-column: 1 / -1;
 }
 
-@media (max-width: 480px) {
-  .inputs-grid {
-    grid-template-columns: 1fr;
-  }
-  .field--full {
-    grid-column: unset;
-  }
-}
-
-/* ============================================================
-   FIELD
-============================================================ */
 .field {
   display: flex;
   flex-direction: column;
   gap: 7px;
 }
 
-label {
+.field-label {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--c-text-2);
+  color: var(--text-2);
   cursor: default;
   user-select: none;
 }
 
 .label-num {
-  color: var(--c-text-3);
+  color: var(--text-3);
   font-size: 9px;
   letter-spacing: 0.08em;
 }
 
 .field-hint {
   font-size: 11px;
-  color: var(--c-text-3);
+  color: var(--text-3);
   line-height: 1.45;
   padding-left: 1px;
 }
 
-/* ============================================================
-   INPUT ROW
-============================================================ */
+/* ── Input row ── */
 .input-row {
   display: flex;
   align-items: stretch;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid var(--c-border-2);
+  background: var(--input-bg);
+  border: 1px solid var(--border-2);
   border-radius: var(--r-md);
   overflow: hidden;
   transition:
     border-color 0.22s ease,
-    box-shadow 0.22s ease;
+    box-shadow 0.22s ease,
+    background 0.3s ease;
 }
 
 .input-row:focus-within {
-  border-color: var(--c-accent);
+  border-color: var(--accent);
   box-shadow:
-    0 0 0 3px var(--c-accent-lo),
-    0 0 28px var(--c-accent-glow);
+    0 0 0 3px var(--accent-lo),
+    0 0 24px var(--accent-glow);
 }
 
 .input-adorn {
   display: flex;
   align-items: center;
   padding: 0 14px;
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 13px;
-  color: var(--c-text-3);
-  background: rgba(255, 255, 255, 0.02);
-  border-right: 1px solid var(--c-border);
+  color: var(--text-3);
+  background: rgba(128, 128, 128, 0.06);
+  border-right: 1px solid var(--border);
   white-space: nowrap;
   flex-shrink: 0;
   user-select: none;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .input-adorn--right {
   border-right: none;
-  border-left: 1px solid var(--c-border);
+  border-left: 1px solid var(--border);
 }
 
 input[type="number"] {
@@ -291,12 +332,13 @@ input[type="number"] {
   background: transparent;
   border: none;
   outline: none;
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 20px;
   font-weight: 600;
-  color: var(--c-text-1);
+  color: var(--text-1);
   letter-spacing: -0.02em;
   -moz-appearance: textfield;
+  transition: color 0.3s ease;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -305,26 +347,24 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 input[type="number"]::placeholder {
-  color: var(--c-text-3);
+  color: var(--text-3);
   font-weight: 300;
   opacity: 1;
 }
 
-/* ============================================================
-   BUTTON
-============================================================ */
-#calcola {
+/* ── Button ── */
+.btn-calcola {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
   padding: 17px 32px;
-  background: var(--c-accent);
-  color: #030c14;
+  background: var(--accent);
+  color: #fff;
   border: none;
   border-radius: var(--r-md);
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -337,7 +377,7 @@ input[type="number"]::placeholder {
     box-shadow 0.22s ease;
 }
 
-#calcola::before {
+.btn-calcola::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -346,34 +386,24 @@ input[type="number"]::placeholder {
   transition: opacity 0.22s ease;
 }
 
-#calcola::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: rgba(0, 0, 0, 0.18);
-}
-
-#calcola:hover {
+.btn-calcola:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 10px 32px rgba(0, 203, 169, 0.38),
-    0 2px 8px rgba(0, 0, 0, 0.35);
+    0 10px 32px rgba(232, 112, 58, 0.42),
+    0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
-#calcola:hover::before {
+.btn-calcola:hover::before {
   opacity: 1;
 }
 
-#calcola:active {
+.btn-calcola:active {
   transform: translateY(0);
-  box-shadow: 0 2px 10px rgba(0, 203, 169, 0.22);
+  box-shadow: 0 2px 10px rgba(232, 112, 58, 0.25);
 }
 
-#calcola:focus-visible {
-  outline: 2px solid var(--c-accent);
+.btn-calcola:focus-visible {
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -390,13 +420,11 @@ input[type="number"]::placeholder {
   transition: transform 0.15s ease;
 }
 
-#calcola:hover .btn-arrow {
+.btn-calcola:hover .btn-arrow {
   transform: translateX(5px);
 }
 
-/* ============================================================
-   RISULTATO — stili per il contenuto iniettato da JS
-============================================================ */
+/* ── Risultato (stili per contenuto iniettato da ui.js) ── */
 #risultato:not(:empty) {
   display: flex;
   flex-direction: column;
@@ -405,20 +433,20 @@ input[type="number"]::placeholder {
 }
 
 #risultato h2 {
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: clamp(1.8rem, 5.5vw, 2.6rem);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--c-accent);
+  color: var(--accent);
   line-height: 1.1;
   animation: count-in 0.5s var(--ease-expo) both;
 }
 
 #risultato h3 {
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: clamp(0.95rem, 2.5vw, 1.15rem);
   font-weight: 400;
-  color: var(--c-text-2);
+  color: var(--text-2);
   letter-spacing: -0.01em;
   margin-top: -6px;
   animation: count-in 0.5s 0.06s var(--ease-expo) both;
@@ -427,16 +455,19 @@ input[type="number"]::placeholder {
 #risultato table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.38);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
   animation: fade-up 0.5s 0.08s var(--ease-expo) both;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
 }
 
 #risultato thead {
-  background: var(--c-surface-2);
+  background: var(--surface-2);
   position: relative;
 }
 
@@ -447,17 +478,17 @@ input[type="number"]::placeholder {
   left: 0;
   right: 0;
   height: 1px;
-  background: var(--c-border-2);
+  background: var(--border-2);
 }
 
 #risultato thead th {
   padding: 11px 18px;
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--c-text-3);
+  color: var(--text-3);
   text-align: left;
 }
 
@@ -467,7 +498,7 @@ input[type="number"]::placeholder {
 }
 
 #risultato tbody tr {
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--border);
   transition: background 0.15s ease;
   animation: row-in 0.38s var(--ease-expo) both;
 }
@@ -502,25 +533,28 @@ input[type="number"]::placeholder {
 
 #risultato tbody tr:last-child {
   border-bottom: none;
-  background: rgba(0, 203, 169, 0.06);
+  background: rgba(232, 112, 58, 0.07);
 }
+
 #risultato tbody tr:hover {
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(128, 128, 128, 0.04);
 }
+
 #risultato tbody tr:last-child:hover {
-  background: rgba(0, 203, 169, 0.09);
+  background: rgba(232, 112, 58, 0.11);
 }
 
 #risultato tbody td {
   padding: 14px 18px;
   font-size: 13px;
-  color: var(--c-text-1);
+  color: var(--text-1);
   vertical-align: middle;
   line-height: 1.4;
+  transition: color 0.3s ease;
 }
 
 #risultato tbody td:nth-child(2) {
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 14px;
   font-weight: 600;
   text-align: right;
@@ -533,31 +567,24 @@ input[type="number"]::placeholder {
 }
 
 #risultato tbody td small {
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 10px;
-  color: var(--c-text-3);
-  letter-spacing: 0.06em;
+  color: var(--text-2);
+  letter-spacing: 0.04em;
   white-space: nowrap;
+  line-height: 1.5;
 }
 
 #risultato tbody tr:last-child td {
-  color: var(--c-accent);
+  color: var(--accent);
   font-weight: 600;
 }
+
 #risultato tbody tr:last-child td:nth-child(2) {
   font-size: 16px;
 }
 
-@media (max-width: 420px) {
-  #risultato thead th:nth-child(3),
-  #risultato tbody td:nth-child(3) {
-    display: none;
-  }
-}
-
-/* ============================================================
-   FOOTER
-============================================================ */
+/* ── Footer ── */
 .site-footer {
   text-align: center;
   display: flex;
@@ -566,10 +593,10 @@ input[type="number"]::placeholder {
 }
 
 .site-footer p {
-  font-family: var(--f-mono);
+  font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.07em;
-  color: var(--c-text-3);
+  color: var(--text-3);
   line-height: 1.65;
 }
 
@@ -578,9 +605,7 @@ input[type="number"]::placeholder {
   opacity: 0.6;
 }
 
-/* ============================================================
-   ANIMATIONS
-============================================================ */
+/* ── Animations ── */
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -628,9 +653,23 @@ input[type="number"]::placeholder {
   }
 }
 
-/* ============================================================
-   RESPONSIVE
-============================================================ */
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .inputs-grid {
+    grid-template-columns: 1fr;
+  }
+  .field--full {
+    grid-column: unset;
+  }
+}
+
+@media (max-width: 420px) {
+  #risultato thead th:nth-child(3),
+  #risultato tbody td:nth-child(3) {
+    display: none;
+  }
+}
+
 @media (max-width: 560px) {
   .page-wrap {
     padding: 48px 18px 48px;
@@ -638,11 +677,13 @@ input[type="number"]::placeholder {
   .calc-card {
     padding: 28px 22px;
   }
+  .theme-toggle {
+    top: 14px;
+    right: 14px;
+  }
 }
 
-/* ============================================================
-   SCROLLBAR
-============================================================ */
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -651,13 +692,13 @@ input[type="number"]::placeholder {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--c-border-2);
+  background: var(--border-2);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--c-text-3);
+  background: var(--text-3);
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--c-border-2) transparent;
+  scrollbar-color: var(--border-2) transparent;
 }

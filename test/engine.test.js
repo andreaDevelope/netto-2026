@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   calcolaAddizionali,
   calcolaContributiInps,
+  calcolaCostoAzienda,
   calcolaCuneoFiscale,
   calcolaDetrazioneLavoroDipendente,
   calcolaIrpefLorda,
@@ -285,4 +286,19 @@ test("calcolaNetto — RAL 8.000, trattamento integrativo NON capiente", () => {
   assert.ok(Math.abs(risultato.irpefNetta - 0) < 0.01);
   assert.ok(Math.abs(risultato.cuneoFiscale.sommaEsente - 515.8008) < 0.01);
   assert.ok(Math.abs(risultato.nettoAnnuo - 7691.24376) < 0.01);
+});
+
+// Verifica le tre componenti singolarmente, non solo il totale.
+test("calcolaCostoAzienda — RAL 30.000", () => {
+  const risultato = calcolaCostoAzienda(30000, CONFIG_2026.costoAzienda);
+  assert.ok(Math.abs(risultato.inpsDatore - 7143) < 0.01);
+  assert.ok(Math.abs(risultato.inail - 120) < 0.01);
+  assert.ok(Math.abs(risultato.tfr - 2072.2222) < 0.01);
+  assert.ok(Math.abs(risultato.costoTotale - 39335.2222) < 0.01);
+});
+
+// Caso degenere: RAL zero, tutto zero.
+test("calcolaCostoAzienda — RAL a zero", () => {
+  const risultato = calcolaCostoAzienda(0, CONFIG_2026.costoAzienda);
+  assert.equal(risultato.costoTotale, 0);
 });

@@ -77,7 +77,7 @@ export const CONFIG_2026 = {
     //   7,1% (fino a 8.500€, max 603,50€) · 5,3% (8.500-15.000€, max 795€) · 4,8% (15.000-20.000€, max 960€)
     // I massimi tornano SOLO se la percentuale è applicata piatta sull'intero reddito da lavoro
     // (es. 15.000 × 5,3% = 795), non a scaglioni progressivi come l'IRPEF.
-  
+
     // si implementa il metodo INPS (piatto), fonte istituzionale.
     sommaEsente: {
       sogliaMassima: 20000,
@@ -133,5 +133,37 @@ export const CONFIG_2026 = {
   default: {
     mensilita: 13, // cambia solo il divisore del netto mensile, non le imposte
     giorniLavorati: 365, // incide sul ragguaglio delle detrazioni
+  },
+
+  // ---------------------------------------------------------------------
+  // 9) COSTO AZIENDA — contributi e oneri a carico del datore di lavoro
+  // Non riguarda il netto del dipendente: è quanto costa il lavoratore
+  // all'azienda, oltre alla RAL.
+  // ---------------------------------------------------------------------
+  costoAzienda: {
+    // INPS a carico datore: aliquota IVS piatta, nessuno scaglione aggiuntivo
+    // dichiarato (a differenza della quota dipendente, che sale oltre la
+    // prima fascia pensionabile). Fonte: INPS, aliquota complessiva 33%
+    // (9,19% dipendente + 23,81% datore).
+    inpsDatore: {
+      aliquota: 0.2381,
+    },
+
+    // INAIL: assicurazione infortuni, varia molto per mansione/rischio
+    // (dallo 0,4‰ per impiegati d'ufficio a oltre il 2% per mansioni a
+    // rischio). Valore usato: impiegato d'ufficio, coerente con il caso
+    // standard del progetto. Fonte: fyscal.it, calcoi.com (dati convergenti,
+    // ≈120€ su RAL 30.000€).
+    inail: {
+      aliquota: 0.004,
+    },
+
+    // TFR (Trattamento di Fine Rapporto): RAL/13,5 (7,41%), meno lo 0,50%
+    // versato all'INPS per il Fondo Adeguamento Pensioni (FAP) — non
+    // trattenuto dall'azienda. Fonte: art. 2120 c.c.
+    tfr: {
+      divisore: 13.5,
+      aliquotaFap: 0.005,
+    },
   },
 };

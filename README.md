@@ -26,7 +26,7 @@ perché il progetto usa moduli ES.
 node --test
 ```
 
-42 test, nessuna dipendenza da installare (usa il test runner nativo di
+47 test, nessuna dipendenza da installare (usa il test runner nativo di
 Node).
 
 ## Perché vanilla JS, zero dipendenze
@@ -48,7 +48,7 @@ rifacimento (dettagli in
       config-2026.js      → parametri normativi, ognuno con riferimento di legge
       ui.js               → collega form e motore
     test/
-      engine.test.js      → 42 test (node --test)
+      engine.test.js      → 47 test (node --test)
     docs/                → documentazione (indice sotto)
 
 ## Documentazione

@@ -34,7 +34,7 @@ interpretazione si adotta.
 Ho implementato il **metodo piatto**, per due motivi:
 
 1. È l'unico compatibile con i massimi dichiarati dalla norma stessa — la
-   verifica sopra è una controprova aritmetica, non un'opinione.
+   verifica sopra è una controprova aritmetica.
 2. È il metodo riportato dalle fonti istituzionali (INPS), non da guide
    fiscali di terze parti.
 

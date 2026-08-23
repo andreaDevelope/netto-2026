@@ -225,7 +225,7 @@ export function calcolaNetto(ral, giorniLavorati, mensilita, config) {
 export function calcolaCostoAzienda(ral, config) {
   const inpsDatore = ral * config.inpsDatore.aliquota;
   const inail = ral * config.inail.aliquota;
-  const tfr = (ral / config.tfr.divisore) - (ral * config.tfr.aliquotaFap);
+  const tfr = ral / config.tfr.divisore - ral * config.tfr.aliquotaFap;
 
   const costoTotale = ral + inpsDatore + inail + tfr;
 

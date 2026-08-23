@@ -51,3 +51,26 @@ input perché la normativa vi è sensibile: le mensilità cambiano solo il
 divisore del netto mensile; i giorni incidono sul ragguaglio della detrazione
 art. 13 e del trattamento integrativo (non sull'ulteriore detrazione del
 cuneo fiscale, che non è ragguagliata ai giorni).
+
+## Costo azienda (calcolo separato)
+
+Oltre al netto per il dipendente, il progetto calcola quanto costa lo stesso
+dipendente all'azienda — prospettiva diversa sulla stessa RAL, gestita da
+una funzione indipendente (`calcolaCostoAzienda`) che non condivide stato
+con `calcolaNetto`.
+
+    RAL
+     + contributi INPS a carico datore
+     + INAIL
+     + TFR
+     = COSTO AZIENDA ANNUO
+
+| #   | Voce                   | Riferimento normativo                | Funzione              |
+| --- | ---------------------- | ------------------------------------ | --------------------- |
+| 1   | Contributi INPS datore | aliquota IVS 23,81% · INPS           | `calcolaCostoAzienda` |
+| 2   | INAIL                  | 0,4% (impiegato d'ufficio)           | `calcolaCostoAzienda` |
+| 3   | TFR                    | art. 2120 c.c. — RAL/13,5 − 0,5% FAP | `calcolaCostoAzienda` |
+
+Il TFR è calcolato con la formula esatta (non l'approssimazione 6,91%): la
+quota lorda RAL/13,5 (7,41%), meno lo 0,5% versato all'INPS per il Fondo
+Adeguamento Pensioni, che non resta a carico dell'azienda.

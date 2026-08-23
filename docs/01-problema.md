@@ -17,6 +17,6 @@ concordi (vedi [06-ambiguita-normative.md](06-ambiguita-normative.md)).
 Un errore di battitura in una percentuale lo trova un test. Un errore di
 lettura della norma no: il codice gira, il numero sembra plausibile, e resta
 comunque sbagliato. Per questo la parte di lavoro più lunga è la
-ricerca delle fonti, non la scrittura del motore — sette funzioni pure,
+ricerca delle fonti, non la scrittura del motore — funzioni pure,
 isolate in [engine.js](../src/engine.js), con i parametri normativi separati
 in [config-2026.js](../src/config-2026.js).

@@ -4,14 +4,15 @@ Calcolatore di stipendio netto da RAL, anno d'imposta 2026. Caso standard:
 dipendente privato a tempo indeterminato, residente a Milano, nessuna
 agevolazione particolare.
 
-**[Prova il calcolatore](https://github.com/andreaDevelope/netto-2026)**
+[Prova il calcolatore](https://github.com/andreaDevelope/netto-2026)
 
 ## Come funziona
 
 Inserisci la RAL (e opzionalmente mensilità e giorni lavorati), il
 calcolatore mostra il netto annuo e mensile con ogni voce trattenuta —
 contributi, IRPEF, detrazioni, addizionali — ciascuna con il riferimento di
-legge accanto.
+legge accanto. Un pannello a parte mostra anche il costo per l'azienda
+(contributi datore, INAIL, TFR).
 
 ## Eseguire in locale
 
@@ -25,7 +26,7 @@ perché il progetto usa moduli ES.
 node --test
 ```
 
-40 test, nessuna dipendenza da installare (usa il test runner nativo di
+42 test, nessuna dipendenza da installare (usa il test runner nativo di
 Node).
 
 ## Perché vanilla JS, zero dipendenze
@@ -34,21 +35,21 @@ Uso Angular quotidianamente al lavoro. L'ho valutato e scartato: per una
 funzione pura senza stato né backend avrebbe aggiunto complessità a costo
 zero di valore. Il tempo risparmiato l'ho investito nella ricerca normativa
 e nei test. Il motore è comunque isolato dal DOM: portarlo in Angular, React
-o in un backend Java è un'operazione di un'ora (dettagli in
+o in un backend Java è un'operazione di riscrittura contenuta, non un
+rifacimento (dettagli in
 [docs/03-scelte-tecniche.md](docs/03-scelte-tecniche.md)).
 
 ## Struttura
 
-index.html → interfaccia
-calcolatore.css → stile
-src/
-engine.js → motore di calcolo, funzioni pure
-config-2026.js → parametri normativi, ognuno con riferimento di legge
-ui.js → collega form e motore
-test/
-engine.test.js → 40 test (node --test)
-docs/ → documentazione (indice sotto)
-
+    index.html          → interfaccia (toggle light/dark in CSS puro, zero JS)
+    calcolatore.css      → stile
+    src/
+      engine.js          → motore di calcolo, funzioni pure (netto + costo azienda)
+      config-2026.js      → parametri normativi, ognuno con riferimento di legge
+      ui.js               → collega form e motore
+    test/
+      engine.test.js      → 42 test (node --test)
+    docs/                → documentazione (indice sotto)
 
 ## Documentazione
 

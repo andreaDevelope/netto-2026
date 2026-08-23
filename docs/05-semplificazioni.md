@@ -50,3 +50,11 @@ diverse, non modellate.
 
 Ragguaglio a giorni e mensilità presume un rapporto continuativo. Cambi di
 contratto, sospensioni o rapporti multipli nello stesso anno non sono gestiti.
+
+## INAIL a aliquota fissa (costo azienda)
+
+Il premio INAIL varia molto per mansione e rischio (dallo 0,4% per lavoro
+d'ufficio a oltre il 2% per mansioni a rischio). Il calcolo del costo azienda
+usa il valore per impiegato d'ufficio (0,4%), coerente con il profilo del
+caso standard (impiegato, nessuna mansione a rischio). Un'azienda con
+lavoratori in altre categorie di rischio avrebbe un'aliquota diversa.

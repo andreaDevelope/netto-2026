@@ -150,7 +150,7 @@ export const CONFIG_2026 = {
     },
 
     // INAIL: assicurazione infortuni, varia molto per mansione/rischio
-    // (dallo 0,4‰ per impiegati d'ufficio a oltre il 2% per mansioni a
+    // (dallo 0,4% per impiegati d'ufficio a oltre il 2% per mansioni a
     // rischio). Valore usato: impiegato d'ufficio, coerente con il caso
     // standard del progetto. Fonte: fyscal.it, calcoi.com (dati convergenti,
     // ≈120€ su RAL 30.000€).

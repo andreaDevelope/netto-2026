@@ -30,3 +30,22 @@ arrotondamento.
 
 Non è escluso che il loro tool la gestisca in un'opzione non esplorata. Il
 confronto è riportato perché isola con precisione dove due modelli divergono.
+
+## Costo azienda
+
+Confronto sullo stesso caso (RAL 30.000 €), questa volta sul costo per il
+datore di lavoro invece che sul netto al dipendente:
+
+| Fonte                            | Costo azienda | Scostamento        |
+| -------------------------------- | ------------- | ------------------ |
+| Questo motore                    | 39.335,22 €   | —                  |
+| Calcolatore costo azienda Jet HR | 41.192 €      | +1.856,78 € (4,7%) |
+
+Lo scostamento qui è più ampio che sul lato netto, ed è atteso: il costo
+azienda dipende da voci più variabili del netto al dipendente (aliquota
+INAIL specifica del settore/CCNL, eventuali fondi contrattuali aggiuntivi,
+"altri costi" non meglio specificati che Jet HR include nel proprio
+calcolo). Il nostro motore usa solo le tre componenti con base normativa
+certa e uniforme per tutti i settori (INPS datore, INAIL impiegato
+d'ufficio, TFR) — le altre voci variabili non sono modellate (vedi
+[05-semplificazioni.md](05-semplificazioni.md)).
